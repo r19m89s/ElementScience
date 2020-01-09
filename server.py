@@ -5,7 +5,6 @@ import json
 from airflow import DAG
 from airflow.operators.python_operator import ShortCircuitOperator, PythonOperator
 from airflow.hooks.S3_hook import S3Hook
-import logging
 from collections import OrderedDict
 from datetime import datetime
 
