@@ -40,11 +40,11 @@ def apiRequest():
     except requests.exceptions.HTTPError as e:
         resp = jsonify(OrderedDict(twitter_error=e.response.text,response_code=e.response.status_code))
         log_to_s3("Twitter Request: "+twit_request+", Response: "+e.response.text)
-        return resp
+        return resp, 500 
     except requests.exceptions.Timeout as e:
         resp = jsonify(twitter_error="timeout")
         log_to_s3("Request: "+twit_request+", Response: TIMEOUT")
-        return resp
+        return resp, 504
 
     try:
         fb = requests.get(fb_request)
@@ -54,11 +54,11 @@ def apiRequest():
     except requests.exceptions.HTTPError as e:
         resp = jsonify(OrderedDict(facebook_error=e.response.text,response_code=e.response.status_code))
         log_to_s3("Facebook Request: "+fb_request+", Response: "+e.response.text)
-        return resp
+        return resp, 500
     except requests.exceptions.Timeout as e:
         resp = jsonify(OrderedDict(facebook_error="timeout"))
         log_to_s3("Facebook Request: "+fb_request+", Response: TIMEOUT")
-        return resp
+        return resp, 504
  
     try:
         insta = requests.get(insta_request)
@@ -68,14 +68,14 @@ def apiRequest():
     except requests.exceptions.HTTPError as e:
         resp = jsonify(OrderedDict(instagram_error=e.response.text,response_code=e.response.status_code))
         log_to_s3("Instagram Request: "+insta_request+", Response: "+e.response.text)
-        return  resp
+        return  resp, 500
     except requests.exceptions.Timeout as e:
         resp = jsonify(OrderedDict(instagam_error="timeout"))
         log_to_s3("Instagram Request: "+insta_request+", Response: TIMEOUT")
-        return jsonify(instagam_error="timeout")
+        return jsonify(instagam_error="timeout"), 504
     
     return jsonify(OrderedDict(twitter_body=twit_body,facebook_body=fb_body,instagram_body=insta_body))
 
 if __name__ == "__main__":
     s3 = S3Hook('MyS3Conn')
-    app.run(host="0.0.0.0", port=4040)
+    app.run(host="0.0.0.0")
