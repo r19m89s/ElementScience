@@ -39,6 +39,22 @@ In the case that ```aws-cli``` isn't installed, follow the following instruction
 ## EC2 Deployment Description
 1. If you don't currently have an AWS account, sign up for one (https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/). Ensure that both EC2 and S3 are included as services for your account. 
 2. Navigate to your EC2 dashboard and choose to create a new instance. 
-
-[EC2 Launch Instance] https://github.com/r19m89s/ElementScience/blob/master/tutorial/Screen%20Shot%202020-01-08%20at%208.16.06%20PM.png "Launch Instance"
-
+![EC2 Launch Instance](https://github.com/r19m89s/ElementScience/blob/master/tutorial/Screen%20Shot%202020-01-08%20at%208.16.06%20PM.png "Launch Instance")
+3. Ensure that EC2 instance is of type Ubuntu Server 16.04 LTS (HVM), SSD Volume Type
+![Ubuntu Type](https://github.com/r19m89s/ElementScience/blob/master/tutorial/Screen%20Shot%202020-01-08%20at%208.24.31%20PM.png "Ubuntu Type")
+4. The instance type t2.micro should suffice for the requirements of this project.
+![Instance Type](https://github.com/r19m89s/ElementScience/blob/master/tutorial/Screen%20Shot%202020-01-08%20at%208.27.13%20PM.png "Instance Type")
+5. Edit security group so that it allows for an ssh connection from your local IP address (if you already have an existing security group configured to respect a localized ssh connection, use that).
+![Edit Security Group](https://github.com/r19m89s/ElementScience/blob/master/tutorial/Screen%20Shot%202020-01-08%20at%208.28.59%20PM.png "Edit Security Group")
+![Adding SSH Connection](https://github.com/r19m89s/ElementScience/blob/master/tutorial/Screen%20Shot%202020-01-08%20at%208.31.11%20PM.png "Adding SSH Connection")
+6. Create a new key pair for AWS, or, if you have a previously used AWS pair, use that
+![Download SSH Key](https://github.com/r19m89s/ElementScience/blob/master/tutorial/Screen%20Shot%202020-01-08%20at%208.35.01%20PM.png "Download SSH Key")
+7. Ensure that the downloaded key pair has been configured to be respected by aws by running ```sudo chmod 400 <aws_key_file>```
+8. SSH into the EC2 instance that you've created, using the downloaded key, by running ```ssh -i "<aws_key_file>" ubuntu@<ec2_public_dns>```
+9. Run the following commands on the command line:
+    1. ```git clone https://github.com/r19m89s/ElementScience.git``` - clone the project onto the ec2 instance
+    2. ```cd <path_to_cloned_library>``` - move into cloned directory
+    3. ```sudo chmod a+x deploy_to_ec2.sh``` - allow dependency script to be executable
+    4. ```sudo ./deploy_to_ec2.sh``` - run dependency installation script
+    5. ```uwsgi <path to cloned project>/uwsgi.ini``` - configure uwsgi to use configuration found in project's uwsgi.ini file. 
+    6. ```sudo service nginx restart``` - restarts nginx, correctly running the installed project. 
